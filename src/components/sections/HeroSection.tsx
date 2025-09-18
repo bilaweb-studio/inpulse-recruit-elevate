@@ -70,11 +70,11 @@ const HeroSection = () => {
               <p className="text-primary-foreground/80">Vagas Ativas</p>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-accent mb-2">+10.000</div>
+              <div className="text-3xl font-bold text-primary-foreground mb-2">+10.000</div>
               <p className="text-primary-foreground/80">Candidatos</p>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-accent mb-2">+500</div>
+              <div className="text-3xl font-bold text-primary-foreground mb-2">+500</div>
               <p className="text-primary-foreground/80">Empresas</p>
             </div>
           </div>
