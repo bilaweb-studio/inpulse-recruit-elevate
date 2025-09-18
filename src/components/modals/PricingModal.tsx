@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Check, Star, Zap, Crown } from "lucide-react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -93,9 +94,15 @@ export function PricingModal({ onPlanSelect, feature }: PricingModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="lg" className="bg-gradient-primary text-primary-foreground hover:opacity-90">
-          <Zap className="w-4 h-4 mr-2" />
-          {feature === "curriculum" ? "Criar Currículo" : "Publicar Vaga"}
+        <Button 
+          size="lg" 
+          className="bg-gradient-primary text-primary-foreground hover:opacity-90"
+          asChild
+        >
+          <Link to={feature === "curriculum" ? "/criar-perfil" : "/criar-vaga"}>
+            <Zap className="w-4 h-4 mr-2" />
+            {feature === "curriculum" ? "Criar Currículo" : "Publicar Vaga"}
+          </Link>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl">

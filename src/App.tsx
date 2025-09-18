@@ -16,6 +16,8 @@ import CompanyLogin from "./pages/CompanyLogin";
 import MyAccount from "./pages/MyAccount";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
+import CreateJob from "./pages/CreateJob";
+import CreateProfile from "./pages/CreateProfile";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,8 @@ const App = () => (
             <Route path="/candidato/login" element={<CandidateLogin />} />
             <Route path="/empresa/login" element={<CompanyLogin />} />
             <Route path="/minha-conta" element={<MyAccount />} />
+            <Route path="/criar-vaga" element={<CreateJob />} />
+            <Route path="/criar-perfil" element={<CreateProfile />} />
             <Route path="/pagamento-sucesso" element={<PaymentSuccess />} />
             <Route path="/pagamento-cancelado" element={<PaymentCanceled />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
