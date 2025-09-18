@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Building2 } from "lucide-react";
+import { Menu, X, User, Building2, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { label: "Vagas", href: "/vagas" },
@@ -42,23 +44,34 @@ const Header = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-3">
-            <Link to="/candidato/login">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white hover:bg-primary [&_svg]:hover:text-white">
-                <User className="w-4 h-4 mr-2" />
-                Candidato
-              </Button>
-            </Link>
-            <Link to="/empresa/login">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white hover:bg-primary [&_svg]:hover:text-white">
-                <Building2 className="w-4 h-4 mr-2" />
-                Empresa
-              </Button>
-            </Link>
-            <Link to="/minha-conta">
-              <Button variant="outline" size="sm">
-                Minha Conta
-              </Button>
-            </Link>
+            {!user ? (
+              <>
+                <Link to="/candidato/login">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white hover:bg-primary [&_svg]:hover:text-white">
+                    <User className="w-4 h-4 mr-2" />
+                    Candidato
+                  </Button>
+                </Link>
+                <Link to="/empresa/login">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white hover:bg-primary [&_svg]:hover:text-white">
+                    <Building2 className="w-4 h-4 mr-2" />
+                    Empresa
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/minha-conta">
+                  <Button variant="outline" size="sm">
+                    Minha Conta
+                  </Button>
+                </Link>
+                <Button variant="ghost" size="sm" onClick={signOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sair
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -93,23 +106,34 @@ const Header = () => {
               </Link>
             ))}
             <div className="border-t border-border pt-4 space-y-3">
-              <Link to="/candidato/login">
-                <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-white hover:bg-primary [&_svg]:hover:text-white">
-                  <User className="w-4 h-4 mr-2" />
-                  Login Candidato
-                </Button>
-              </Link>
-              <Link to="/empresa/login">
-                <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-white hover:bg-primary [&_svg]:hover:text-white">
-                  <Building2 className="w-4 h-4 mr-2" />
-                  Login Empresa
-                </Button>
-              </Link>
-              <Link to="/minha-conta">
-                <Button variant="outline" size="sm" className="w-full">
-                  Minha Conta
-                </Button>
-              </Link>
+              {!user ? (
+                <>
+                  <Link to="/candidato/login">
+                    <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-white hover:bg-primary [&_svg]:hover:text-white">
+                      <User className="w-4 h-4 mr-2" />
+                      Login Candidato
+                    </Button>
+                  </Link>
+                  <Link to="/empresa/login">
+                    <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-white hover:bg-primary [&_svg]:hover:text-white">
+                      <Building2 className="w-4 h-4 mr-2" />
+                      Login Empresa
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/minha-conta">
+                    <Button variant="outline" size="sm" className="w-full">
+                      Minha Conta
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" size="sm" className="w-full justify-start" onClick={signOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sair
+                  </Button>
+                </>
+              )}
             </div>
           </nav>
         </div>

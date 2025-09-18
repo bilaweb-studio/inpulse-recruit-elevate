@@ -11,43 +11,44 @@ import {
   MapPin,
   ArrowRight
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const footerSections = [
     {
       title: "Para Candidatos",
       links: [
-        { label: "Buscar Vagas", href: "#vagas" },
-        { label: "Criar Perfil", href: "#perfil" },
-        { label: "Planos", href: "#planos-candidatos" },
-        { label: "Dicas de Carreira", href: "#blog" }
+        { label: "Buscar Vagas", href: "/vagas" },
+        { label: "Minha Conta", href: "/minha-conta" },
+        { label: "Login", href: "/candidato/login" },
+        { label: "Blog", href: "/blog" }
       ]
     },
     {
       title: "Para Empresas",
       links: [
-        { label: "Publicar Vaga", href: "#publicar" },
-        { label: "Buscar Talentos", href: "#talentos" },
-        { label: "Planos Empresariais", href: "#planos-empresas" },
-        { label: "IA de Recrutamento", href: "#ia" }
+        { label: "Login Empresa", href: "/empresa/login" },
+        { label: "Minha Conta", href: "/minha-conta" },
+        { label: "Serviços", href: "/servicos" },
+        { label: "Contato", href: "/contato" }
       ]
     },
     {
       title: "Empresa",
       links: [
-        { label: "Sobre Nós", href: "#sobre" },
-        { label: "Serviços", href: "#servicos" },
-        { label: "Contato", href: "#contato" },
-        { label: "Blog", href: "#blog" }
+        { label: "Sobre Nós", href: "/sobre" },
+        { label: "Serviços", href: "/servicos" },
+        { label: "Contato", href: "/contato" },
+        { label: "Blog", href: "/blog" }
       ]
     },
     {
       title: "Suporte",
       links: [
-        { label: "Central de Ajuda", href: "#ajuda" },
-        { label: "Termos de Uso", href: "#termos" },
-        { label: "Política de Privacidade", href: "#privacidade" },
-        { label: "FAQ", href: "#faq" }
+        { label: "Central de Ajuda", href: "/ajuda" },
+        { label: "Termos de Uso", href: "/termos" },
+        { label: "Política de Privacidade", href: "/privacidade" },
+        { label: "FAQ", href: "/faq" }
       ]
     }
   ];
@@ -118,13 +119,23 @@ const Footer = () => {
               <ul className="space-y-3">
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-primary-foreground/70 hover:text-accent transition-colors flex items-center group"
-                    >
-                      {link.label}
-                      <ArrowRight className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
-                    </a>
+                    {link.href.startsWith('/') ? (
+                      <Link
+                        to={link.href}
+                        className="text-sm text-primary-foreground/70 hover:text-accent transition-colors flex items-center group"
+                      >
+                        {link.label}
+                        <ArrowRight className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        className="text-sm text-primary-foreground/70 hover:text-accent transition-colors flex items-center group"
+                      >
+                        {link.label}
+                        <ArrowRight className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Search, Users, Building2, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const HeroSection = () => {
+  const { user } = useAuth();
   return (
     <section className="pt-24 pb-16 bg-gradient-hero relative overflow-hidden">
       {/* Background Pattern */}
@@ -48,20 +50,22 @@ const HeroSection = () => {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-slide-up">
-            <Link to="/candidato/login">
-              <Button size="lg" variant="secondary" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
-                <Users className="w-5 h-5 mr-2" />
-                Sou Candidato
-              </Button>
-            </Link>
-            <Link to="/empresa/login">
-              <Button size="lg" variant="secondary" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
-                <Building2 className="w-5 h-5 mr-2" />
-                Sou Empresa
-              </Button>
-            </Link>
-          </div>
+          {!user && (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-slide-up">
+              <Link to="/candidato/login">
+                <Button size="lg" variant="secondary" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
+                  <Users className="w-5 h-5 mr-2" />
+                  Sou Candidato
+                </Button>
+              </Link>
+              <Link to="/empresa/login">
+                <Button size="lg" variant="secondary" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
+                  <Building2 className="w-5 h-5 mr-2" />
+                  Sou Empresa
+                </Button>
+              </Link>
+            </div>
+          )}
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto animate-fade-in">
