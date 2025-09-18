@@ -14,15 +14,33 @@ import {
   ChevronRight,
   Shield,
   FileText,
-  BarChart3
+  BarChart3,
+  Plus
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
+import { PricingModal } from "@/components/modals/PricingModal";
+import { useToast } from "@/hooks/use-toast";
 
 const MyAccount = () => {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
+  const { toast } = useToast();
+
+  const handlePlanSelect = (plan: string) => {
+    if (plan === "basic") {
+      toast({
+        title: "Funcionalidade ativada!",
+        description: "Sua criação foi processada com sucesso.",
+      });
+    } else {
+      toast({
+        title: "Redirecionando para pagamento",
+        description: "Você será redirecionado para completar o pagamento.",
+      });
+    }
+  };
 
   const handleLogout = async () => {
     await signOut();
@@ -132,16 +150,29 @@ const MyAccount = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-8">
-              <Badge variant="outline" className="mb-4 text-primary border-primary">
-                Minha Conta
-              </Badge>
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                Bem-vindo de volta!
-              </h1>
-              <p className="text-muted-foreground">
-                Gerencie seu perfil e acompanhe suas candidaturas
-              </p>
+            <div className="flex items-center justify-between mb-8">
+              <div className="text-center flex-1">
+                <Badge variant="outline" className="mb-4 text-primary border-primary">
+                  Minha Conta
+                </Badge>
+                <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+                  Bem-vindo de volta!
+                </h1>
+                <p className="text-muted-foreground">
+                  Gerencie seu perfil e acompanhe suas candidaturas
+                </p>
+              </div>
+              
+              <div className="hidden md:flex gap-3">
+                <PricingModal feature="curriculum" onPlanSelect={handlePlanSelect} />
+                <PricingModal feature="vaga" onPlanSelect={handlePlanSelect} />
+              </div>
+            </div>
+
+            {/* Mobile Action Buttons */}
+            <div className="md:hidden flex gap-3 mb-6">
+              <PricingModal feature="curriculum" onPlanSelect={handlePlanSelect} />
+              <PricingModal feature="vaga" onPlanSelect={handlePlanSelect} />
             </div>
 
             {/* User Info Card */}
