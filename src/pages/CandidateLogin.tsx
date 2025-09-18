@@ -7,12 +7,86 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Users, Mail, Lock, Eye, EyeOff, UserPlus } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const CandidateLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [loading, setLoading] = useState(false);
+  
+  const { user, signIn, signUp, signInWithGoogle } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (isLogin) {
+        const { error } = await signIn(email, password);
+        if (error) {
+          toast({
+            title: "Erro no login",
+            description: error.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Login realizado com sucesso!",
+            description: "Bem-vindo de volta.",
+          });
+        }
+      } else {
+        const fullName = `${firstName} ${lastName}`;
+        const { error } = await signUp(email, password, fullName);
+        if (error) {
+          toast({
+            title: "Erro no cadastro",
+            description: error.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Cadastro realizado!",
+            description: "Verifique seu email para confirmar a conta.",
+          });
+        }
+      }
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Algo deu errado. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const { error } = await signInWithGoogle();
+    if (error) {
+      toast({
+        title: "Erro no login com Google",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,126 +119,133 @@ const CandidateLogin = () => {
                 </CardTitle>
               </CardHeader>
               
-              <CardContent className="space-y-4">
-                {!isLogin && (
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">
-                        Nome
-                      </label>
-                      <Input placeholder="Seu nome" />
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {!isLogin && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">
+                          Nome
+                        </label>
+                        <Input 
+                          placeholder="Seu nome" 
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">
+                          Sobrenome
+                        </label>
+                        <Input 
+                          placeholder="Seu sobrenome" 
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          required
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">
-                        Sobrenome
-                      </label>
-                      <Input placeholder="Seu sobrenome" />
-                    </div>
-                  </div>
-                )}
-                
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Email
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      type="email"
-                      placeholder="seu@email.com"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Senha
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Sua senha"
-                      className="pl-10 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                {!isLogin && (
+                  )}
+                  
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">
-                      Confirmar Senha
+                      Email
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        type="email"
+                        placeholder="seu@email.com"
+                        className="pl-10"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Senha
                     </label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Confirme sua senha"
-                        className="pl-10"
+                        placeholder="Sua senha"
+                        className="pl-10 pr-10"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
                     </div>
                   </div>
-                )}
 
-                {isLogin && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="remember" />
+                  {isLogin && (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox id="remember" />
+                        <label
+                          htmlFor="remember"
+                          className="text-sm text-muted-foreground cursor-pointer"
+                        >
+                          Lembrar de mim
+                        </label>
+                      </div>
+                      <Link
+                        to="/forgot-password"
+                        className="text-sm text-primary hover:text-primary-dark"
+                      >
+                        Esqueci minha senha
+                      </Link>
+                    </div>
+                  )}
+
+                  {!isLogin && (
+                    <div className="flex items-start space-x-2">
+                      <Checkbox id="terms" className="mt-1" />
                       <label
-                        htmlFor="remember"
+                        htmlFor="terms"
                         className="text-sm text-muted-foreground cursor-pointer"
                       >
-                        Lembrar de mim
+                        Concordo com os{" "}
+                        <Link to="/terms" className="text-primary hover:text-primary-dark">
+                          Termos de Uso
+                        </Link>{" "}
+                        e{" "}
+                        <Link to="/privacy" className="text-primary hover:text-primary-dark">
+                          Política de Privacidade
+                        </Link>
                       </label>
                     </div>
-                    <Link
-                      to="/forgot-password"
-                      className="text-sm text-primary hover:text-primary-dark"
-                    >
-                      Esqueci minha senha
-                    </Link>
-                  </div>
-                )}
+                  )}
 
-                {!isLogin && (
-                  <div className="flex items-start space-x-2">
-                    <Checkbox id="terms" className="mt-1" />
-                    <label
-                      htmlFor="terms"
-                      className="text-sm text-muted-foreground cursor-pointer"
-                    >
-                      Concordo com os{" "}
-                      <Link to="/terms" className="text-primary hover:text-primary-dark">
-                        Termos de Uso
-                      </Link>{" "}
-                      e{" "}
-                      <Link to="/privacy" className="text-primary hover:text-primary-dark">
-                        Política de Privacidade
-                      </Link>
-                    </label>
-                  </div>
-                )}
+                  <Button type="submit" className="w-full bg-primary hover:bg-primary-dark" disabled={loading}>
+                    {loading ? "Carregando..." : (isLogin ? "Entrar" : "Criar Conta")}
+                  </Button>
+                </form>
 
-                <Button className="w-full bg-primary hover:bg-primary-dark">
-                  {isLogin ? "Entrar" : "Criar Conta"}
-                </Button>
-
-                <div className="relative">
+                <div className="relative mt-4">
                   <Separator />
                   <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-sm text-muted-foreground">
                     ou
                   </span>
                 </div>
 
-                <Button variant="outline" className="w-full border-border hover:bg-muted">
+                <Button 
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  variant="outline" 
+                  className="w-full border-border hover:bg-muted mt-4"
+                >
                   <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"

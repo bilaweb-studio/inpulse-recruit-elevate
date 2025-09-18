@@ -17,12 +17,18 @@ import {
   BarChart3
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 
 const MyAccount = () => {
-  // Este seria um estado real verificando se o usuário está logado
-  const isLoggedIn = false;
+  const { user, signOut } = useAuth();
+  const { profile } = useProfile();
 
-  if (!isLoggedIn) {
+  const handleLogout = async () => {
+    await signOut();
+  };
+
+  if (!user) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -146,8 +152,12 @@ const MyAccount = () => {
                     <User className="w-8 h-8 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-xl font-semibold text-foreground">João da Silva</h2>
-                    <p className="text-muted-foreground">Desenvolvedor Full Stack</p>
+                    <h2 className="text-xl font-semibold text-foreground">
+                      {profile?.full_name || user?.email || "Usuário"}
+                    </h2>
+                    <p className="text-muted-foreground">
+                      {profile?.experience_level || "Candidato"}
+                    </p>
                     <div className="flex items-center mt-2">
                       <Badge variant="outline" className="mr-2">
                         Plano Pro
@@ -256,6 +266,7 @@ const MyAccount = () => {
               <Card className="bg-destructive/5 border-destructive/20">
                 <CardContent className="p-4">
                   <Button 
+                    onClick={handleLogout}
                     variant="outline" 
                     className="w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                   >
