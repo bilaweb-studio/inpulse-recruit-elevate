@@ -66,7 +66,7 @@ const HeroSection = () => {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto animate-fade-in">
             <div className="text-center">
-              <div className="text-3xl font-bold text-accent mb-2">+1.500</div>
+              <div className="text-3xl font-bold text-primary-foreground mb-2">+1.500</div>
               <p className="text-primary-foreground/80">Vagas Ativas</p>
             </div>
             <div className="text-center">
