@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Users, Brain, TrendingUp, CheckCircle, Crown } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ForCompanies = () => {
   const features = [
@@ -108,10 +109,12 @@ const ForCompanies = () => {
                 Nossa IA analisa currículos em segundos, identifica os melhores candidatos 
                 e acelera todo o processo de recrutamento.
               </p>
-              <Button variant="secondary" size="lg" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
-                <Building2 className="w-5 h-5 mr-2" />
-                Teste Grátis por 14 Dias
-              </Button>
+              <Link to="/empresa/login">
+                <Button variant="secondary" size="lg" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
+                  <Building2 className="w-5 h-5 mr-2" />
+                  Teste Grátis por 14 Dias
+                </Button>
+              </Link>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
@@ -167,15 +170,17 @@ const ForCompanies = () => {
                     ))}
                   </ul>
                   
-                  <Button 
-                    className={`w-full ${
-                      plan.popular 
-                        ? 'bg-primary hover:bg-primary-dark' 
-                        : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
-                    }`}
-                  >
-                    Contratar Plano
-                  </Button>
+                  <Link to="/empresa/login">
+                    <Button 
+                      className={`w-full ${
+                        plan.popular 
+                          ? 'bg-primary hover:bg-primary-dark' 
+                          : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
+                      }`}
+                    >
+                      Contratar Plano
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}

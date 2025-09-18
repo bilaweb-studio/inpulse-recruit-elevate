@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Search, Users, Building2, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -38,22 +39,28 @@ const HeroSection = () => {
                   className="pl-10 bg-background border-0 text-foreground"
                 />
               </div>
-              <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                Buscar Vagas
-              </Button>
+              <Link to="/vagas">
+                <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                  Buscar Vagas
+                </Button>
+              </Link>
             </div>
           </div>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-slide-up">
-            <Button size="lg" variant="secondary" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
-              <Users className="w-5 h-5 mr-2" />
-              Sou Candidato
-            </Button>
-            <Button size="lg" variant="secondary" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
-              <Building2 className="w-5 h-5 mr-2" />
-              Sou Empresa
-            </Button>
+            <Link to="/candidato/login">
+              <Button size="lg" variant="secondary" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
+                <Users className="w-5 h-5 mr-2" />
+                Sou Candidato
+              </Button>
+            </Link>
+            <Link to="/empresa/login">
+              <Button size="lg" variant="secondary" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/30">
+                <Building2 className="w-5 h-5 mr-2" />
+                Sou Empresa
+              </Button>
+            </Link>
           </div>
 
           {/* Stats */}

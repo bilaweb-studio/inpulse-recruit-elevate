@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, UserCheck, Star, Target, CheckCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ForCandidates = () => {
   const features = [
@@ -126,15 +127,17 @@ const ForCandidates = () => {
                     ))}
                   </ul>
                   
-                  <Button 
-                    className={`w-full ${
-                      plan.popular 
-                        ? 'bg-primary hover:bg-primary-dark' 
-                        : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
-                    }`}
-                  >
-                    {plan.price === "Gratuito" ? "Começar Grátis" : "Assinar Plano"}
-                  </Button>
+                  <Link to="/candidato/login">
+                    <Button 
+                      className={`w-full ${
+                        plan.popular 
+                          ? 'bg-primary hover:bg-primary-dark' 
+                          : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
+                      }`}
+                    >
+                      {plan.price === "Gratuito" ? "Começar Grátis" : "Assinar Plano"}
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
