@@ -11,8 +11,36 @@ import { PricingModal } from "@/components/modals/PricingModal";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
-import { ArrowLeft, Plus, X } from "lucide-react";
+import { ArrowLeft, Plus, X, Briefcase, GraduationCap, Award } from "lucide-react";
 import { Link } from "react-router-dom";
+
+interface Experience {
+  id: string;
+  company: string;
+  position: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  current: boolean;
+}
+
+interface Education {
+  id: string;
+  institution: string;
+  degree: string;
+  field: string;
+  startDate: string;
+  endDate: string;
+  current: boolean;
+}
+
+interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  date: string;
+  url?: string;
+}
 
 interface ProfileFormData {
   full_name: string;
@@ -27,6 +55,9 @@ interface ProfileFormData {
   experience_level: string;
   salary_expectation: string;
   available_for_work: boolean;
+  experiences: Experience[];
+  education: Education[];
+  certifications: Certification[];
 }
 
 const CreateProfile = () => {
@@ -36,6 +67,7 @@ const CreateProfile = () => {
   const [currentSkill, setCurrentSkill] = useState("");
   const [showPricing, setShowPricing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeSection, setActiveSection] = useState("personal");
   
   const [formData, setFormData] = useState<ProfileFormData>({
     full_name: profile?.full_name || "",
@@ -49,7 +81,10 @@ const CreateProfile = () => {
     skills: profile?.skills || [],
     experience_level: profile?.experience_level || "",
     salary_expectation: profile?.salary_expectation?.toString() || "",
-    available_for_work: profile?.available_for_work ?? true
+    available_for_work: profile?.available_for_work ?? true,
+    experiences: [],
+    education: [],
+    certifications: []
   });
 
   const handleInputChange = (field: keyof ProfileFormData, value: string | boolean) => {
@@ -70,6 +105,100 @@ const CreateProfile = () => {
     setFormData(prev => ({
       ...prev,
       skills: prev.skills.filter(skill => skill !== skillToRemove)
+    }));
+  };
+
+  const addExperience = () => {
+    const newExp: Experience = {
+      id: Date.now().toString(),
+      company: "",
+      position: "",
+      description: "",
+      startDate: "",
+      endDate: "",
+      current: false
+    };
+    setFormData(prev => ({
+      ...prev,
+      experiences: [...prev.experiences, newExp]
+    }));
+  };
+
+  const updateExperience = (id: string, field: keyof Experience, value: string | boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      experiences: prev.experiences.map(exp => 
+        exp.id === id ? { ...exp, [field]: value } : exp
+      )
+    }));
+  };
+
+  const removeExperience = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      experiences: prev.experiences.filter(exp => exp.id !== id)
+    }));
+  };
+
+  const addEducation = () => {
+    const newEdu: Education = {
+      id: Date.now().toString(),
+      institution: "",
+      degree: "",
+      field: "",
+      startDate: "",
+      endDate: "",
+      current: false
+    };
+    setFormData(prev => ({
+      ...prev,
+      education: [...prev.education, newEdu]
+    }));
+  };
+
+  const updateEducation = (id: string, field: keyof Education, value: string | boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      education: prev.education.map(edu => 
+        edu.id === id ? { ...edu, [field]: value } : edu
+      )
+    }));
+  };
+
+  const removeEducation = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      education: prev.education.filter(edu => edu.id !== id)
+    }));
+  };
+
+  const addCertification = () => {
+    const newCert: Certification = {
+      id: Date.now().toString(),
+      name: "",
+      issuer: "",
+      date: "",
+      url: ""
+    };
+    setFormData(prev => ({
+      ...prev,
+      certifications: [...prev.certifications, newCert]
+    }));
+  };
+
+  const updateCertification = (id: string, field: keyof Certification, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      certifications: prev.certifications.map(cert => 
+        cert.id === id ? { ...cert, [field]: value } : cert
+      )
+    }));
+  };
+
+  const removeCertification = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      certifications: prev.certifications.filter(cert => cert.id !== id)
     }));
   };
 
@@ -170,11 +299,48 @@ const CreateProfile = () => {
             </p>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Informações Pessoais</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          {/* Navigation Tabs */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            <Button 
+              variant={activeSection === "personal" ? "default" : "outline"}
+              onClick={() => setActiveSection("personal")}
+              size="sm"
+            >
+              Pessoal
+            </Button>
+            <Button 
+              variant={activeSection === "experience" ? "default" : "outline"}
+              onClick={() => setActiveSection("experience")}
+              size="sm"
+            >
+              <Briefcase className="w-4 h-4 mr-1" />
+              Experiência
+            </Button>
+            <Button 
+              variant={activeSection === "education" ? "default" : "outline"}
+              onClick={() => setActiveSection("education")}
+              size="sm"
+            >
+              <GraduationCap className="w-4 h-4 mr-1" />
+              Educação
+            </Button>
+            <Button 
+              variant={activeSection === "certifications" ? "default" : "outline"}
+              onClick={() => setActiveSection("certifications")}
+              size="sm"
+            >
+              <Award className="w-4 h-4 mr-1" />
+              Certificações
+            </Button>
+          </div>
+
+          {/* Personal Information Section */}
+          {activeSection === "personal" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Informações Pessoais</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
               {/* Nome e Email */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -332,19 +498,328 @@ const CreateProfile = () => {
                   rows={4}
                 />
               </div>
-
-              {/* Botão de Envio */}
-              <div className="flex justify-end pt-4">
-                <Button 
-                  onClick={handleSubmit}
-                  disabled={!validateForm() || isSubmitting}
-                  size="lg"
-                >
-                  {isSubmitting ? "Processando..." : "Salvar Perfil"}
-                </Button>
-              </div>
             </CardContent>
           </Card>
+          )}
+
+          {/* Experience Section */}
+          {activeSection === "experience" && (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Experiência Profissional</CardTitle>
+                  <Button onClick={addExperience} size="sm">
+                    <Plus className="w-4 h-4 mr-1" />
+                    Adicionar
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {formData.experiences.map((exp) => (
+                  <Card key={exp.id} className="border-border/50">
+                    <CardContent className="p-4 space-y-4">
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-medium">Experiência {formData.experiences.indexOf(exp) + 1}</h4>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => removeExperience(exp.id)}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label>Empresa</Label>
+                          <Input
+                            value={exp.company}
+                            onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
+                            placeholder="Nome da empresa"
+                          />
+                        </div>
+                        <div>
+                          <Label>Cargo</Label>
+                          <Input
+                            value={exp.position}
+                            onChange={(e) => updateExperience(exp.id, 'position', e.target.value)}
+                            placeholder="Seu cargo"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label>Data de Início</Label>
+                          <Input
+                            type="month"
+                            value={exp.startDate}
+                            onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <Label>Data de Fim</Label>
+                          <Input
+                            type="month"
+                            value={exp.endDate}
+                            onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
+                            disabled={exp.current}
+                          />
+                        </div>
+                        <div className="flex items-end">
+                          <div className="flex items-center space-x-2">
+                            <Switch
+                              checked={exp.current}
+                              onCheckedChange={(checked) => updateExperience(exp.id, 'current', checked)}
+                            />
+                            <Label>Emprego atual</Label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>Descrição das atividades</Label>
+                        <Textarea
+                          value={exp.description}
+                          onChange={(e) => updateExperience(exp.id, 'description', e.target.value)}
+                          placeholder="Descreva suas principais responsabilidades e conquistas..."
+                          rows={3}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                
+                {formData.experiences.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Briefcase className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>Nenhuma experiência adicionada ainda.</p>
+                    <p className="text-sm">Clique em "Adicionar" para incluir sua experiência profissional.</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Education Section */}
+          {activeSection === "education" && (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Formação Acadêmica</CardTitle>
+                  <Button onClick={addEducation} size="sm">
+                    <Plus className="w-4 h-4 mr-1" />
+                    Adicionar
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {formData.education.map((edu) => (
+                  <Card key={edu.id} className="border-border/50">
+                    <CardContent className="p-4 space-y-4">
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-medium">Formação {formData.education.indexOf(edu) + 1}</h4>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => removeEducation(edu.id)}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label>Instituição</Label>
+                          <Input
+                            value={edu.institution}
+                            onChange={(e) => updateEducation(edu.id, 'institution', e.target.value)}
+                            placeholder="Nome da instituição"
+                          />
+                        </div>
+                        <div>
+                          <Label>Grau</Label>
+                          <Select value={edu.degree} onValueChange={(value) => updateEducation(edu.id, 'degree', value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione o grau" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="tecnico">Técnico</SelectItem>
+                              <SelectItem value="graduacao">Graduação</SelectItem>
+                              <SelectItem value="pos-graduacao">Pós-graduação</SelectItem>
+                              <SelectItem value="mestrado">Mestrado</SelectItem>
+                              <SelectItem value="doutorado">Doutorado</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>Área de Estudo</Label>
+                        <Input
+                          value={edu.field}
+                          onChange={(e) => updateEducation(edu.id, 'field', e.target.value)}
+                          placeholder="Ex: Ciência da Computação, Administração..."
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label>Data de Início</Label>
+                          <Input
+                            type="month"
+                            value={edu.startDate}
+                            onChange={(e) => updateEducation(edu.id, 'startDate', e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <Label>Data de Conclusão</Label>
+                          <Input
+                            type="month"
+                            value={edu.endDate}
+                            onChange={(e) => updateEducation(edu.id, 'endDate', e.target.value)}
+                            disabled={edu.current}
+                          />
+                        </div>
+                        <div className="flex items-end">
+                          <div className="flex items-center space-x-2">
+                            <Switch
+                              checked={edu.current}
+                              onCheckedChange={(checked) => updateEducation(edu.id, 'current', checked)}
+                            />
+                            <Label>Em andamento</Label>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                
+                {formData.education.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <GraduationCap className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>Nenhuma formação adicionada ainda.</p>
+                    <p className="text-sm">Clique em "Adicionar" para incluir sua formação acadêmica.</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Certifications Section */}
+          {activeSection === "certifications" && (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Certificações</CardTitle>
+                  <Button onClick={addCertification} size="sm">
+                    <Plus className="w-4 h-4 mr-1" />
+                    Adicionar
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {formData.certifications.map((cert) => (
+                  <Card key={cert.id} className="border-border/50">
+                    <CardContent className="p-4 space-y-4">
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-medium">Certificação {formData.certifications.indexOf(cert) + 1}</h4>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => removeCertification(cert.id)}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label>Nome da Certificação</Label>
+                          <Input
+                            value={cert.name}
+                            onChange={(e) => updateCertification(cert.id, 'name', e.target.value)}
+                            placeholder="Ex: AWS Solutions Architect"
+                          />
+                        </div>
+                        <div>
+                          <Label>Emissor</Label>
+                          <Input
+                            value={cert.issuer}
+                            onChange={(e) => updateCertification(cert.id, 'issuer', e.target.value)}
+                            placeholder="Ex: Amazon Web Services"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label>Data de Emissão</Label>
+                          <Input
+                            type="month"
+                            value={cert.date}
+                            onChange={(e) => updateCertification(cert.id, 'date', e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <Label>URL da Credencial (opcional)</Label>
+                          <Input
+                            value={cert.url || ""}
+                            onChange={(e) => updateCertification(cert.id, 'url', e.target.value)}
+                            placeholder="https://credly.com/..."
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                
+                {formData.certifications.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Award className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>Nenhuma certificação adicionada ainda.</p>
+                    <p className="text-sm">Clique em "Adicionar" para incluir suas certificações.</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Submit Button */}
+          <div className="flex justify-center gap-4 pt-6">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                if (activeSection === "personal") return;
+                const sections = ["personal", "experience", "education", "certifications"];
+                const currentIndex = sections.indexOf(activeSection);
+                setActiveSection(sections[currentIndex - 1]);
+              }}
+              disabled={activeSection === "personal"}
+            >
+              Anterior
+            </Button>
+            
+            {activeSection === "certifications" ? (
+              <Button 
+                onClick={handleSubmit}
+                disabled={!validateForm() || isSubmitting}
+                size="lg"
+              >
+                {isSubmitting ? "Processando..." : "Salvar Perfil"}
+              </Button>
+            ) : (
+              <Button 
+                onClick={() => {
+                  const sections = ["personal", "experience", "education", "certifications"];
+                  const currentIndex = sections.indexOf(activeSection);
+                  setActiveSection(sections[currentIndex + 1]);
+                }}
+              >
+                Próximo
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 

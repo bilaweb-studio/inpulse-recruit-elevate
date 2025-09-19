@@ -10,12 +10,15 @@ import { useState, useEffect } from "react";
 import { useJobs } from "@/hooks/useJobs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { JobDetailsModal } from "@/components/modals/JobDetailsModal";
 
 const Jobs = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
   const [levelFilter, setLevelFilter] = useState("all");
   const [jobTypeFilter, setJobTypeFilter] = useState("all");
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const { jobs, loading, fetchJobs, applyToJob, saveJob } = useJobs();
   const { user } = useAuth();
@@ -89,6 +92,11 @@ const Jobs = () => {
     if (min && max) return `R$ ${min.toLocaleString()} - R$ ${max.toLocaleString()}`;
     if (min) return `A partir de R$ ${min.toLocaleString()}`;
     return `Até R$ ${max?.toLocaleString()}`;
+  };
+
+  const handleJobDetails = (job: any) => {
+    setSelectedJob(job);
+    setIsModalOpen(true);
   };
 
   return (
@@ -277,7 +285,10 @@ const Jobs = () => {
                       </div>
 
                       <div className="flex gap-2">
-                        <Button className="flex-1 bg-primary hover:bg-primary-dark">
+                        <Button 
+                          className="flex-1 bg-primary hover:bg-primary-dark"
+                          onClick={() => handleJobDetails(job)}
+                        >
                           Ver Detalhes
                         </Button>
                         <Button 
@@ -304,6 +315,12 @@ const Jobs = () => {
       </main>
 
       <Footer />
+      
+      <JobDetailsModal 
+        job={selectedJob}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

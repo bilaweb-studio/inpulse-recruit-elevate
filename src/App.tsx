@@ -18,6 +18,9 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 import CreateJob from "./pages/CreateJob";
 import CreateProfile from "./pages/CreateProfile";
+import Profile from "./pages/Profile";
+import SavedJobs from "./pages/SavedJobs";
+import Applications from "./pages/Applications";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +45,9 @@ const App = () => (
             <Route path="/criar-perfil" element={<CreateProfile />} />
             <Route path="/pagamento-sucesso" element={<PaymentSuccess />} />
             <Route path="/pagamento-cancelado" element={<PaymentCanceled />} />
+            <Route path="/conta/perfil" element={<Profile />} />
+            <Route path="/conta/favoritas" element={<SavedJobs />} />
+            <Route path="/conta/candidaturas" element={<Applications />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
